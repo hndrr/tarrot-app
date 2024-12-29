@@ -1,16 +1,14 @@
-import { tarotCards } from "../../data/tarotCards";
-import TarotCard from "../../components/TarotCard";
+import { tarotCards } from "../../../data/tarotCards";
+import TarotCard from "../../../components/TarotCard";
 import Link from "next/link";
 
-export default async function Reading({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const slug = (await params).slug;
-  const card = tarotCards.find(
-    (card) => card.id === (slug ? parseInt(slug) : NaN)
-  );
+type Params = {
+  id: string;
+};
+
+export default async function Reading({ params }: { params: Promise<Params> }) {
+  const { id } = await params;
+  const card = tarotCards.find((card) => card.id === parseInt(id));
 
   if (!card) {
     return (
@@ -54,7 +52,7 @@ export default async function Reading({
               ← トップに戻る
             </Link>
             <Link
-              href={`/reading?cardId=${
+              href={`/reading/${
                 tarotCards[Math.floor(Math.random() * tarotCards.length)].id
               }`}
               className="text-purple-300 hover:text-purple-100 transition duration-300"
