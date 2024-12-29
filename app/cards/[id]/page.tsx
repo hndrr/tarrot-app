@@ -2,14 +2,17 @@ import { tarotCards } from "../../../data/tarotCards";
 import Link from "next/link";
 import Image from "next/image";
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
+type Params = {
+  id: string;
+};
 
-export default async function CardDetail({ params }: PageProps) {
-  const card = tarotCards.find((card) => card.id === parseInt(params.id));
+export default async function CardDetail({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
+  const { id } = await params;
+  const card = tarotCards.find((card) => card.id === parseInt(id));
 
   if (!card) {
     return (
