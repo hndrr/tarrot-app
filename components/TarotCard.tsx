@@ -11,18 +11,18 @@ import Image from 'next/image';
 
     export default function TarotCard({ card }: TarotCardProps) {
       return (
-        <div className="bg-white/10 backdrop-blur-sm rounded-lg shadow-lg p-6 max-w-sm text-center">
-          <div className="relative aspect-[2/3] w-48 mx-auto">
+        <div className="flex flex-col items-center">
+          <div className="relative aspect-[2/3] w-64 mb-6">
             <Image
               src={card.image}
               alt={card.name}
               fill
-              className="rounded-lg object-cover"
+              className="rounded-lg object-cover shadow-lg"
               priority
             />
           </div>
-          <h3 className="text-2xl font-semibold mt-4">{card.name}</h3>
-          <p className="text-gray-200 mt-2">{card.meaning}</p>
+          <h3 className="text-3xl font-bold mb-3">{card.name}</h3>
+          <p className="text-xl text-gray-200">{card.meaning}</p>
         </div>
       );
     }
