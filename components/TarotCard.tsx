@@ -27,6 +27,9 @@ export default function TarotCard({ card, isReversed }: TarotCardProps) {
         />
       </div>
       <h3 className="text-3xl font-bold mb-3">{card.name}</h3>
+      <span className="text-xl text-gray-200 mb-3 font-bold">
+        {isReversed ? "逆位置" : "正位置"}
+      </span>
       <p className="text-xl text-gray-200">{card.meaning}</p>
     </div>
   );
