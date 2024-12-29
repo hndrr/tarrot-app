@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { tarotCards } from "../data/tarotCards";
+import { tarotCards } from "./data/tarotCards";
 import Image from "next/image";
 
 export default function Home() {

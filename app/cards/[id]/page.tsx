@@ -1,4 +1,4 @@
-import { tarotCards } from "../../../data/tarotCards";
+import { tarotCards } from "../../data/tarotCards";
 import Link from "next/link";
 import Image from "next/image";
 
