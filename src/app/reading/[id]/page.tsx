@@ -1,5 +1,5 @@
-import { tarotCards } from "../../data/tarotCards";
-import TarotCard from "../../components/TarotCard";
+import { tarotCards } from "@/data/tarotCards";
+import TarotCard from "@components/TarotCard";
 import Link from "next/link";
 
 type Params = {
