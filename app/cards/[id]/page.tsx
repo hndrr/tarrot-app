@@ -8,11 +8,16 @@ type Params = {
 
 export default async function CardDetail({
   params,
+  searchParams,
 }: {
   params: Promise<Params>;
+  searchParams: Promise<{ reversed?: string }>;
 }) {
+  const resolvedSearchParams = await searchParams;
+
   const { id } = await params;
   const card = tarotCards.find((card) => card.id === parseInt(id));
+  const isReversed = resolvedSearchParams?.reversed === "true";
 
   if (!card) {
     return (
@@ -36,7 +41,11 @@ export default async function CardDetail({
         </Link>
 
         <div className="flex flex-col md:flex-row items-center gap-10">
-          <div className="relative aspect-[2/3] w-64">
+          <div
+            className={`relative aspect-[2/3] w-64 ${
+              isReversed && "rotate-180"
+            }`}
+          >
             <Image
               src={card.image}
               alt={card.name}
@@ -47,11 +56,15 @@ export default async function CardDetail({
           </div>
 
           <div className="flex-1">
-            <h1 className="text-4xl font-bold mb-4">{card.name}</h1>
+            <h1 className="text-4xl font-bold mb-4">
+              {card.name}
+              <span className="ml-2 text-2xl font-normal">
+                {isReversed ? `逆位置` : `正位置`}
+              </span>
+            </h1>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
               <h2 className="text-xl font-semibold mb-2">カードの意味</h2>
               <p className="text-gray-200">{card.meaning}</p>
-
               <h2 className="text-xl font-semibold mt-6 mb-2">詳細な解釈</h2>
               <div className="space-y-4">
                 <div>

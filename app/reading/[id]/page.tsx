@@ -21,6 +21,8 @@ export default async function Reading({ params }: { params: Promise<Params> }) {
     );
   }
 
+  const isReversed = Math.random() < 0.5;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-indigo-900 text-white">
       <div className="container mx-auto px-4 py-10">
@@ -33,10 +35,10 @@ export default async function Reading({ params }: { params: Promise<Params> }) {
 
         <div className="flex flex-col items-center gap-8">
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 max-w-2xl w-full">
-            <TarotCard card={card} />
+            <TarotCard card={card} isReversed={isReversed} />
             <div className="mt-8 text-center">
               <Link
-                href={`/cards/${card.id}`}
+                href={`/cards/${card.id}?reversed=${isReversed}`}
                 className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full transition duration-300 inline-block"
               >
                 詳細を見る
