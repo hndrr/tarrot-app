@@ -26,7 +26,7 @@ export default async function CardDetail({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-900 to-indigo-900 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-indigo-900 text-white">
       <div className="container mx-auto px-4 py-10">
         <Link
           href="/"
