@@ -32,7 +32,7 @@ export default async function CardDetail({
           href="/"
           className="inline-block mb-8 text-purple-300 hover:text-purple-100 transition duration-300"
         >
-          ← 戻る
+          戻る
         </Link>
 
         <div className="flex flex-col md:flex-row items-center gap-10">
