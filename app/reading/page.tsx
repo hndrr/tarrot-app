@@ -1,24 +1,14 @@
-"use client";
-import { useSearchParams, useRouter } from "next/navigation";
 import { tarotCards } from "../../data/tarotCards";
 import TarotCard from "../../components/TarotCard";
 import Link from "next/link";
 
-export default function Reading() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const cardId = searchParams.get("cardId");
+type ReadingPageProps = {
+  searchParams: { cardId?: string };
+};
+
+export default function Reading({ searchParams }: ReadingPageProps) {
+  const cardId = searchParams.cardId;
   const card = tarotCards.find((card) => card.id === parseInt(cardId || ""));
-
-  const drawNewCard = () => {
-    let newCardId;
-    do {
-      const randomIndex = Math.floor(Math.random() * tarotCards.length);
-      newCardId = tarotCards[randomIndex].id;
-    } while (newCardId === parseInt(cardId || ""));
-
-    router.push(`/reading?cardId=${newCardId}`);
-  };
 
   if (!card) {
     return (
@@ -61,12 +51,14 @@ export default function Reading() {
             >
               ← トップに戻る
             </Link>
-            <button
-              onClick={drawNewCard}
+            <Link
+              href={`/reading?cardId=${
+                tarotCards[Math.floor(Math.random() * tarotCards.length)].id
+              }`}
               className="text-purple-300 hover:text-purple-100 transition duration-300"
             >
               もう一度引く
-            </button>
+            </Link>
           </div>
         </div>
       </div>
