@@ -2,13 +2,15 @@ import { tarotCards } from "../../data/tarotCards";
 import TarotCard from "../../components/TarotCard";
 import Link from "next/link";
 
-type ReadingPageProps = {
-  searchParams: { cardId?: string };
-};
-
-export default async function Reading({ searchParams }: ReadingPageProps) {
-  const cardId = searchParams.cardId || "";
-  const card = tarotCards.find((card) => card.id === parseInt(cardId));
+export default async function Reading({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const slug = (await params).slug;
+  const card = tarotCards.find(
+    (card) => card.id === (slug ? parseInt(slug) : NaN)
+  );
 
   if (!card) {
     return (
