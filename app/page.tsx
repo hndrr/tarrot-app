@@ -3,6 +3,25 @@ import { useRouter } from "next/navigation";
 import { tarotCards } from "../data/tarotCards";
 import Image from "next/image";
 
+export const generateMetadata = () => {
+  return {
+    title: "タロットリーディング",
+    description: "タロットカードに隠されたメッセージを見つけましょう。",
+    openGraph: {
+      title: "タロットリーディング",
+      description: "タロットカードに隠されたメッセージを見つけましょう。",
+      images: [
+        {
+          url: "/assets/cover.webp",
+          width: 1024,
+          height: 1024,
+          alt: "タロットカードのプレビュー",
+        },
+      ],
+    },
+  };
+};
+
 export default function Home() {
   const router = useRouter();
 
