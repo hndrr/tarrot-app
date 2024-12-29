@@ -49,7 +49,7 @@ export default async function Reading({ params }: { params: Promise<Params> }) {
               href={`/reading/${
                 tarotCards[Math.floor(Math.random() * tarotCards.length)].id
               }`}
-              className="bg-slate-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full transition duration-300 inline-block"
+              className="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-6 rounded-full transition duration-300 inline-block"
             >
               もう一度引く
             </Link>
