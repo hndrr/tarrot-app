@@ -6,7 +6,7 @@ export default function Loading() {
       {/* background */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/assets/mystic-background.webp"
+          src="/assets/mystic-background.jpg"
           alt="背景"
           fill
           className="object-cover opacity-70"
