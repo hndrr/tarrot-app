@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-900 to-indigo-900 text-white flex flex-col items-center justify-center py-10">
       <h1 className="text-4xl font-bold mb-8">タロット占い</h1>
-      <div className="relative w-[500px] h-[500px] mb-8">
+      <div className="relative mb-8 aspect-square w-[90%] max-w-[500px]">
         <Image
           src="/assets/cover.png"
           alt="タロットカード"
