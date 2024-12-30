@@ -17,7 +17,7 @@ export default async function Reading({
   const resolvedSearchParams = await searchParams;
 
   if (!(resolvedSearchParams?.back === "true")) {
-    await delay(2000);
+    await delay(6000);
   }
 
   const { id } = await params;
