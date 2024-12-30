@@ -7,7 +7,7 @@ export default function Home() {
       <h1 className="text-4xl font-bold mb-8">タロット占い</h1>
       <div className="relative w-[500px] h-[500px] mb-8">
         <Image
-          src="/assets/cover.webp"
+          src="/assets/cover.png"
           alt="タロットカード"
           fill
           className="rounded-lg object-cover"
