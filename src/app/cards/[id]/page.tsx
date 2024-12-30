@@ -34,7 +34,7 @@ export default async function CardDetail({
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-indigo-900 text-white">
       <div className="container mx-auto px-4 py-10">
         <Link
-          href="/"
+          href={`/reading/${id}?reversed=${isReversed}&back=true`}
           className="inline-block mb-8 text-purple-300 hover:text-purple-100 transition duration-300"
         >
           戻る

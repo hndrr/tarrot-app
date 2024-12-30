@@ -1,4 +1,5 @@
 import { tarotCards } from "@/data/tarotCards";
+import { delay } from "@/lib/delay";
 import TarotCard from "@components/TarotCard";
 import Link from "next/link";
 
@@ -6,9 +7,22 @@ type Params = {
   id: string;
 };
 
-export default async function Reading({ params }: { params: Promise<Params> }) {
+export default async function Reading({
+  params,
+  searchParams,
+}: {
+  params: Promise<Params>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const resolvedSearchParams = await searchParams;
+
+  if (!(resolvedSearchParams?.back === "true")) {
+    await delay(2000);
+  }
+
   const { id } = await params;
   const card = tarotCards.find((card) => card.id === parseInt(id));
+  const isReversed = resolvedSearchParams?.reversed === "true";
 
   if (!card) {
     return (
@@ -20,8 +34,6 @@ export default async function Reading({ params }: { params: Promise<Params> }) {
       </div>
     );
   }
-
-  const isReversed = Math.random() < 0.5;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-indigo-900 text-white">
@@ -50,7 +62,7 @@ export default async function Reading({ params }: { params: Promise<Params> }) {
             <Link
               href={`/reading/${
                 tarotCards[Math.floor(Math.random() * tarotCards.length)].id
-              }`}
+              }?reversed=${Math.random() < 0.5}`}
               className="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-6 rounded-full transition duration-300 inline-block"
             >
               もう一度引く
