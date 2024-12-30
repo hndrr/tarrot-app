@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     description: "タロットカードに隠されたメッセージを見つけましょう。",
     images: [
       {
-        url: "ogp.png",
+        url: "ogp.jpg",
         width: 1200,
         height: 630,
         alt: "タロットカードのプレビュー",
