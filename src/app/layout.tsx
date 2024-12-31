@@ -23,7 +23,7 @@ export const metadata: Metadata = {
         url: "ogp.jpg",
         width: 1200,
         height: 630,
-        alt: "タロットカードのプレビュー",
+        alt: "タロットカード",
       },
     ],
   },
