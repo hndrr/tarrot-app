@@ -6,6 +6,32 @@ type Params = {
   id: string;
 };
 
+type TarotResponse = {
+  upright: string;
+  reversed: string;
+};
+
+async function getTarotMessage(
+  name: string,
+  meaning: string
+): Promise<TarotResponse> {
+  const apiHost = process.env.NEXT_PUBLIC_API_HOST || "http://localhost:3000";
+
+  const res = await fetch(`${apiHost}/api/tarot`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name, meaning }),
+  });
+
+  if (!res.ok) {
+    throw new Error("文言生成に失敗しました。");
+  }
+
+  return res.json();
+}
+
 export default async function CardDetail({
   params,
   searchParams,
@@ -17,7 +43,18 @@ export default async function CardDetail({
 
   const { id } = await params;
   const card = tarotCards.find((card) => card.id === parseInt(id));
+  const { name, meaning } = card || {};
   const isReversed = resolvedSearchParams?.reversed === "true";
+
+  let result: TarotResponse | null = null;
+
+  if (name && meaning) {
+    try {
+      result = await getTarotMessage(name, meaning);
+    } catch (error) {
+      console.error("エラー:", error);
+    }
+  }
 
   if (!card) {
     return (
@@ -64,23 +101,12 @@ export default async function CardDetail({
             </h1>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
               <h2 className="text-xl font-semibold mb-2">カードの意味</h2>
-              <p className="text-gray-200">{card.meaning}</p>
+              <p className="text-gray-200">{meaning}</p>
               <h2 className="text-xl font-semibold mt-6 mb-2">詳細な解釈</h2>
               <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold text-purple-300">正位置</h3>
-                  <p className="text-gray-200">
-                    {card.meaning}
-                    の状態が強く現れています。前向きな意味として解釈できます。
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-purple-300">逆位置</h3>
-                  <p className="text-gray-200">
-                    {card.meaning}
-                    の状態が停滞または阻害されている可能性があります。注意が必要かもしれません。
-                  </p>
-                </div>
+                <p className="text-gray-200">
+                  {isReversed ? result?.reversed : result?.upright}
+                </p>
               </div>
             </div>
           </div>
