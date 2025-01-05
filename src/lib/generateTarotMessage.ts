@@ -2,7 +2,12 @@ import { z } from "zod";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const apiKey = process.env.OPENAI_API_KEY;
+const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+const gatewayId = process.env.CLOUDFLARE_GATEWAY_NAME;
+const baseURL = `https://gateway.ai.cloudflare.com/v1/${accountId}/${gatewayId}/openai`;
+
+const client = new OpenAI({ apiKey, baseURL });
 
 export const generateTarotMessage = async (name: string, meaning: string) => {
   const prompt = `
