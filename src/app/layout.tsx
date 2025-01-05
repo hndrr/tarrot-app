@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { GoogleTagManager } from "@next/third-parties/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,18 +17,20 @@ export const metadata: Metadata = {
   title: "TAROTIE",
   description: "タロットカードに隠されたメッセージを見つけましょう。",
   openGraph: {
-    title: "タロットリーディング",
+    title: "TAROTIE",
     description: "タロットカードに隠されたメッセージを見つけましょう。",
     images: [
       {
         url: "ogp.jpg",
         width: 1200,
         height: 630,
-        alt: "タロットカード",
+        alt: "TAROTIE",
       },
     ],
   },
 };
+
+const GTM_ID = process.env.GTM_ID || "";
 
 export default function RootLayout({
   children,
@@ -35,7 +38,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ja">
+      <GoogleTagManager gtmId={GTM_ID} />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
