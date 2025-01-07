@@ -1,22 +1,26 @@
+// import { generateTarotMessageGemini } from "@/lib/generateTarotMessageGemini";
 import { NextResponse } from "next/server";
 
-interface TarotResponse {
+type TarotResponse = {
   upright: string;
   reversed: string;
-}
+};
 
 export async function POST(request: Request) {
   const { name, meaning } = await request.json();
-
   const prompt = `
-あなたはタロットカード占い師です。
+  あなたはタロットカード占い師です。
 
-タロットカード「${name}」に基づいてキーワードを含む正位置と逆位置の解釈文を生成し、アドバイスしてください。
-キーワード: ${meaning}
-`;
+  タロットカード「${name}」に基づいてキーワードを含む正位置と逆位置の解釈文を生成し、アドバイスしてください。
+  キーワード: ${meaning}
+  `;
 
+  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+  const gatewayId = process.env.CLOUDFLARE_GATEWAY_NAME;
   const geminiApiEndpoint =
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-002:generateContent";
+    // "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-002:generateContent";
+    `https://gateway.ai.cloudflare.com/v1/${accountId}/${gatewayId}/google-ai-studio/v1beta/models/gemini-1.5-flash-002:generateContent`;
+
   const schema = {
     description: "タロットカードの正位置と逆位置の文言を生成する",
     type: "ARRAY",
@@ -37,6 +41,8 @@ export async function POST(request: Request) {
   };
 
   try {
+    // const response = await generateTarotMessageGemini(name, meaning);
+    // const tarotResponse = response;
     const response = await fetch(geminiApiEndpoint, {
       method: "POST",
       headers: {
@@ -52,6 +58,7 @@ export async function POST(request: Request) {
         generationConfig: {
           response_mime_type: "application/json",
           response_schema: schema,
+          temperature: 0.7,
         },
       }),
     });
@@ -61,6 +68,7 @@ export async function POST(request: Request) {
     }
 
     const data = await response.json();
+    console.log(data);
     const responseText = data.candidates[0].content.parts[0].text.trim();
     const tarotResponse: TarotResponse = JSON.parse(responseText)?.[0];
 
