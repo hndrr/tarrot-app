@@ -2,9 +2,15 @@ import { z } from "zod";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 
+const apiKey = process.env.GEMINI_API_KEY;
+const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+const gatewayId = process.env.CLOUDFLARE_GATEWAY_NAME;
+const baseURL = `https://gateway.ai.cloudflare.com/v1/${accountId}/${gatewayId}/google-ai-studio`;
+// const baseURL = "https://generativelanguage.googleapis.com/v1beta/openai";
+
 const client = new OpenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-  baseURL: "https://generativelanguage.googleapis.com/v1beta/openai",
+  apiKey,
+  baseURL,
 });
 
 export const generateTarotMessageGemini = async (
@@ -26,12 +32,33 @@ export const generateTarotMessageGemini = async (
 
   // API呼び出し
   try {
+    // const genAI = new GoogleGenerativeAI(api_token);
+    // const model = await genAI.getGenerativeModel(
+    //   {
+    //     model: "gemini-1.5-flash",
+    //     generationConfig: {
+    //       responseMimeType: "application/json",
+    //       responseSchema: schema,
+    //     },
+    //   },
+    //   {
+    //     baseUrl: geminiApiEndpoint,
+    //   }
+    // );
+    // const result = await model.generateContent(prompt);
+    // console.log(result);
+    // const responseText =
+    //   result.response.candidates?.[0].content.parts[0].text || "";
+    // const tarotResponse: TarotResponse = JSON.parse(responseText)?.[0];
+    // console.log(tarotResponse);
+    // return tarotResponse;
+
     const completion = await client.beta.chat.completions.parse({
       model: "gemini-1.5-flash-002",
       messages: [{ role: "system", content: prompt }],
       response_format: zodResponseFormat(jsonSchema, "tarot_response"),
-      // max_tokens: 300,
-      // temperature: 1,
+      max_tokens: 300,
+      temperature: 1,
     });
 
     console.log(completion);

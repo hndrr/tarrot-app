@@ -1,4 +1,11 @@
-export const tarotCards = [
+export type TarotCard = {
+  id: number;
+  name: string;
+  image: string;
+  meaning: string;
+};
+
+export const tarotCards: TarotCard[] = [
   {
     id: 1,
     name: "愚者",

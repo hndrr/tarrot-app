@@ -6,10 +6,30 @@ import { tarotCards } from "@/data/tarotCards";
 export default function DrawCardButton() {
   const router = useRouter();
 
-  const drawCard = () => {
-    const randomIndex = Math.floor(Math.random() * tarotCards.length);
-    const selectedCard = tarotCards[randomIndex];
-    router.push(`/reading/${selectedCard.id}`);
+  const drawCard = async () => {
+    try {
+      const randomIndex = Math.floor(Math.random() * tarotCards.length);
+      const selectedCard = tarotCards[randomIndex];
+
+      // const response = await fetch("/api/tarot", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     name: selectedCard.name,
+      //     meaning: selectedCard.meaning,
+      //   }),
+      // });
+
+      // if (!response.ok) {
+      //   throw new Error("API request failed");
+      // }
+
+      router.push(`/reading/${selectedCard.id}`);
+    } catch (error) {
+      console.error("Error drawing card:", error);
+    }
   };
 
   return (
