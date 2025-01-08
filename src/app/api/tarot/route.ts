@@ -11,7 +11,6 @@ type TarotResponse = {
 
 export async function GET() {
   const session = await getSession();
-
   console.log("session", session);
 
   if (session) {
