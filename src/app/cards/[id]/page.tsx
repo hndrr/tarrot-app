@@ -51,7 +51,15 @@ export default async function CardDetail({
 
   if (name && meaning) {
     try {
-      result = await getTarotSession();
+      const session = await getTarotSession();
+      // セッションからカード名に基づいて解釈を取得
+      const cardReading = session.cardReadings?.[name];
+      if (cardReading) {
+        result = {
+          upright: cardReading.upright,
+          reversed: cardReading.reversed,
+        };
+      }
     } catch (error) {
       console.error("エラー:", error);
     }

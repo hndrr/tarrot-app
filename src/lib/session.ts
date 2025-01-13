@@ -59,9 +59,9 @@ export async function getSession() {
 
     // キャッシュを更新
     cachedSession = {
-      selectedCards: [...session.selectedCards],
-      cardReadings: { ...session.cardReadings },
-      isReadingInProgress: session.isReadingInProgress,
+      selectedCards: session.selectedCards ? [...session.selectedCards] : [],
+      cardReadings: session.cardReadings ? { ...session.cardReadings } : {},
+      isReadingInProgress: session.isReadingInProgress ?? false,
     };
 
     console.log("セッションを取得:", cachedSession);
@@ -97,9 +97,9 @@ export async function saveSession(data: Partial<SessionData>) {
 
     // キャッシュを更新
     cachedSession = {
-      selectedCards: [...session.selectedCards],
-      cardReadings: { ...session.cardReadings },
-      isReadingInProgress: session.isReadingInProgress,
+      selectedCards: session.selectedCards ? [...session.selectedCards] : [],
+      cardReadings: session.cardReadings ? { ...session.cardReadings } : {},
+      isReadingInProgress: session.isReadingInProgress ?? false,
     };
 
     console.log("セッションを保存:", cachedSession);
