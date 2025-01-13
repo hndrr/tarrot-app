@@ -3,16 +3,11 @@ import { tarotCards } from "@/data/tarotCards";
 import Link from "next/link";
 import Image from "next/image";
 import { getTarotSession } from "@/lib/getTarotSession";
-// import { getTarotMessage } from "@/lib/getTarrotMessage";
-// import { TarotResponse } from "@/types/session";
+import { getTarotMessage } from "@/lib/getTarotMessage";
+import { TarotResponse } from "@/types/session";
 
 type Params = {
   id: string;
-};
-
-type TarotResponse = {
-  upright: string;
-  reversed: string;
 };
 
 // async function getTarotSession(name: string): Promise<TarotResponse> {
@@ -51,14 +46,19 @@ export default async function CardDetail({
 
   if (name && meaning) {
     try {
+      // まずセッションをチェック
       const session = await getTarotSession();
-      // セッションからカード名に基づいて解釈を取得
       const cardReading = session.cardReadings?.[name];
+
       if (cardReading) {
+        // セッションに既存の解釈がある場合はそれを使用
         result = {
           upright: cardReading.upright,
           reversed: cardReading.reversed,
         };
+      } else {
+        // 解釈が存在しない場合は新しく生成
+        result = await getTarotMessage(name, meaning);
       }
     } catch (error) {
       console.error("エラー:", error);
