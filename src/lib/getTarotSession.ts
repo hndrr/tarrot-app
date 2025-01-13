@@ -1,28 +1,43 @@
-import { TarotResponse } from "@/types/session";
+import { SessionData } from "@/types/session";
 
-export async function getTarotSession(): Promise<TarotResponse> {
-  const apiHost = process.env.NEXT_PUBLIC_API_HOST || "http://localhost:3000";
-  const session = await fetch(`${apiHost}/api/tarot`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+export async function getTarotSession(): Promise<SessionData> {
+  try {
+    const apiHost = process.env.NEXT_PUBLIC_API_HOST || "http://localhost:3000";
+    const response = await fetch(`${apiHost}/api/tarot`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store", // キャッシュを無効化
+    });
 
-  // セッションからデータを取得
-  const cardReading = await session.json();
-  console.log("cardddd", cardReading);
+    if (!response.ok) {
+      throw new Error("セッションの取得に失敗しました。");
+    }
 
-  // if (cardReading) {
-  //   return {
-  //     upright: cardReading.upright,
-  //     reversed: cardReading.reversed,
-  //   };
-  // }
+    const data = await response.json();
+    console.log("APIレスポンス:", data);
 
-  // if (!res.ok) {
-  //   throw new Error("文言生成に失敗しました。");
-  // }
+    // セッションデータを検証
+    const session: SessionData = {
+      selectedCards: Array.isArray(data.selectedCards)
+        ? data.selectedCards
+        : [],
+      cardReadings:
+        typeof data.cardReadings === "object" ? data.cardReadings : {},
+      isReadingInProgress: Boolean(data.isReadingInProgress),
+    };
 
-  return cardReading.json();
+    console.log("正規化されたセッション:", session);
+    return session;
+  } catch (error) {
+    console.error("セッション取得エラー:", error);
+    // エラー時のデフォルト値
+    return {
+      selectedCards: [],
+      cardReadings: {},
+      isReadingInProgress: false,
+    };
+  }
 }
