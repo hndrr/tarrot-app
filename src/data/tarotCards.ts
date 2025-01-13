@@ -1,9 +1,4 @@
-export type TarotCard = {
-  id: number;
-  name: string;
-  image: string;
-  meaning: string;
-};
+import type { TarotCard } from "@/types/session.d";
 
 export const tarotCards: TarotCard[] = [
   {

@@ -1,4 +1,4 @@
-import { TarotCard } from "@/data/tarotCards";
+import { TarotCard } from "@/types/session.d";
 
 export interface TarotResponse {
   upright: string;

@@ -1,4 +1,9 @@
-import type { TarotCard } from "@/data/tarotCards";
+export type TarotCard = {
+  id: number;
+  name: string;
+  image: string;
+  meaning: string;
+};
 
 export type TarotResponse = {
   upright: string;

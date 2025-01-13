@@ -1,12 +1,14 @@
-import { getSession, saveSession } from "@/lib/session";
-import { NextResponse } from "next/server";
-import { TarotCard } from "@/data/tarotCards";
+import { sessionOptions } from "@/lib/session";
+import { NextRequest, NextResponse } from "next/server";
+import type { TarotCard } from "@/types/session.d";
 import { tarotCards } from "@/data/tarotCards";
-import { TarotResponse } from "@/types/session";
+import { SessionData, TarotResponse } from "@/types/session";
+import { getIronSession } from "iron-session";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const session = await getSession();
+    const res = NextResponse.next();
+    const session = await getIronSession<SessionData>(req, res, sessionOptions);
     console.log("session", session);
 
     if (!session || !session.cardReadings) {
@@ -31,10 +33,11 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const { name, meaning } = await request.json();
-    const session = await getSession();
+    const { name, meaning } = await req.json();
+    const res = NextResponse.next();
+    const session = await getIronSession<SessionData>(req, res, sessionOptions);
 
     if (!name || !meaning) {
       return NextResponse.json(
@@ -121,34 +124,45 @@ export async function POST(request: Request) {
     }
 
     try {
-      // セッションを更新して保存
-      const updatedSession = await saveSession({
-        cardReadings: {
+      if (data.selectedCards) {
+        session.selectedCards = data.selectedCards;
+      }
+      if (data.cardReadings) {
+        session.cardReadings = {
           ...(session.cardReadings || {}),
-          [name]: {
-            upright: tarotResponse.upright,
-            reversed: tarotResponse.reversed,
-          },
-        },
-        selectedCards: [...(session.selectedCards || []), selectedCard],
-        isReadingInProgress: true,
-      });
+          ...data.cardReadings,
+        };
+      }
+      if (data.isReadingInProgress !== undefined) {
+        session.isReadingInProgress = data.isReadingInProgress;
+      }
 
-      console.log("セッション更新:", {
-        selectedCards: updatedSession.selectedCards,
-        cardReadingsCount: Object.keys(updatedSession.cardReadings || {})
-          .length,
-        isReadingInProgress: updatedSession.isReadingInProgress,
-      });
+      await session.save();
+
+      // セッションを更新して保存
+      // const updatedSession = await saveSession({
+      //   cardReadings: {
+      //     ...(session.cardReadings || {}),
+      //     [name]: {
+      //       upright: tarotResponse.upright,
+      //       reversed: tarotResponse.reversed,
+      //     },
+      //   },
+      //   selectedCards: [...(session.selectedCards || []), selectedCard],
+      //   isReadingInProgress: true,
+      // });
+
+      // console.log("セッション更新:", {
+      //   selectedCards: updatedSession.selectedCards,
+      //   cardReadingsCount: Object.keys(updatedSession.cardReadings || {})
+      //     .length,
+      //   isReadingInProgress: updatedSession.isReadingInProgress,
+      // });
 
       // レスポンスと一緒にセッションの状態も返す
       return NextResponse.json({
         ...tarotResponse,
-        session: {
-          selectedCards: updatedSession.selectedCards,
-          cardReadings: updatedSession.cardReadings,
-          isReadingInProgress: updatedSession.isReadingInProgress,
-        },
+        session,
       });
     } catch (error) {
       console.error("セッション更新エラー:", error);

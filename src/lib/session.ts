@@ -15,8 +15,8 @@ export const sessionOptions = {
   password,
   cookieName: "tarot-session",
   cookieOptions: {
-    secure: isProduction,
-    sameSite: "lax" as const,
+    secure: false,
+    sameSite: "none" as const,
     path: "/",
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60, // 1週間
