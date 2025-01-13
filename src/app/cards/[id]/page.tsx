@@ -1,36 +1,30 @@
 import { tarotCards } from "@/data/tarotCards";
 import Link from "next/link";
 import Image from "next/image";
+import { getTarotSession } from "@/lib/getTarotSession";
+import { TarotResponse } from "@/types/session";
 
 type Params = {
   id: string;
 };
 
-type TarotResponse = {
-  upright: string;
-  reversed: string;
-};
+// async function getTarotSession(name: string): Promise<TarotResponse> {
+//   const session = await getSession();
 
-async function getTarotMessage(
-  name: string,
-  meaning: string
-): Promise<TarotResponse> {
-  const apiHost = process.env.NEXT_PUBLIC_API_HOST || "http://localhost:3000";
+//   // セッションからデータを取得
+//   const cardReading = session.cardReadings?.[name];
 
-  const res = await fetch(`${apiHost}/api/tarot`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ name, meaning }),
-  });
+//   console.log("cardReading", cardReading);
 
-  if (!res.ok) {
-    throw new Error("文言生成に失敗しました。");
-  }
-
-  return res.json();
-}
+//   if (cardReading) {
+//     return {
+//       upright: cardReading.upright,
+//       reversed: cardReading.reversed,
+//     };
+//   } else {
+//     throw new Error("文言生成に失敗しました。");
+//   }
+// }
 
 export default async function CardDetail({
   params,
@@ -50,7 +44,14 @@ export default async function CardDetail({
 
   if (name && meaning) {
     try {
-      result = await getTarotMessage(name, meaning);
+      const session = await getTarotSession();
+      const cardReading = session.cardReadings?.[name];
+      if (cardReading) {
+        result = {
+          upright: cardReading.upright,
+          reversed: cardReading.reversed,
+        };
+      }
     } catch (error) {
       console.error("エラー:", error);
     }

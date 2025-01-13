@@ -1,5 +1,7 @@
 import { tarotCards } from "@/data/tarotCards";
-import { delay } from "@/lib/delay";
+// import { delay } from "@/lib/delay";
+import { getTarotMessage } from "@/lib/getTarotMessage";
+import { TarotResponse } from "@/types/session";
 import TarotCard from "@components/TarotCard";
 import Link from "next/link";
 
@@ -16,13 +18,24 @@ export default async function Reading({
 }) {
   const resolvedSearchParams = await searchParams;
 
-  if (!(resolvedSearchParams?.back === "true")) {
-    await delay(6000);
-  }
+  // if (!(resolvedSearchParams?.back === "true")) {
+  //   await delay(6000);
+  // }
 
   const { id } = await params;
   const card = tarotCards.find((card) => card.id === parseInt(id));
+  const { name, meaning } = card || {};
   const isReversed = resolvedSearchParams?.reversed === "true";
+
+  let result: TarotResponse | null = null;
+
+  if (!(resolvedSearchParams?.back === "true") && name && meaning) {
+    try {
+      result = await getTarotMessage(name, meaning);
+    } catch (error) {
+      console.error("エラー:", error);
+    }
+  }
 
   if (!card) {
     return (
@@ -42,6 +55,9 @@ export default async function Reading({
           <h1 className="text-3xl font-bold mb-4">あなたのカード</h1>
           <p className="text-purple-200">
             このカードがあなたに伝えるメッセージ
+            {result && (
+              <span>{isReversed ? result.reversed : result.upright}</span>
+            )}
           </p>
         </div>
 

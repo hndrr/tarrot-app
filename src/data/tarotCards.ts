@@ -1,4 +1,6 @@
-export const tarotCards = [
+import type { TarotCard } from "@/types/session.d";
+
+export const tarotCards: TarotCard[] = [
   {
     id: 1,
     name: "愚者",
