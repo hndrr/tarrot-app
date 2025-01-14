@@ -6,7 +6,18 @@ import { tarotCards } from "@/data/tarotCards";
 export default function DrawCardButton() {
   const router = useRouter();
 
-  const drawCard = () => {
+  const drawCard = async () => {
+    // hasVisitedをリセット
+    await fetch("/api/session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        hasVisited: false,
+      }),
+    });
+
     const randomIndex = Math.floor(Math.random() * tarotCards.length);
     const selectedCard = tarotCards[randomIndex];
     router.push(`/reading/${selectedCard.id}`);
