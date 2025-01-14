@@ -5,6 +5,7 @@ import TarotCard from "@components/TarotCard";
 import SaveCard from "@/components/SaveCard";
 import Link from "next/link";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 type Params = {
   id: string;
@@ -83,14 +84,26 @@ export default async function Reading({ params }: { params: Params }) {
           </div>
 
           <div className="flex gap-8 flex-col text-center">
-            <Link
-              href={`/reading/${
-                tarotCards[Math.floor(Math.random() * tarotCards.length)].id
-              }`}
-              className="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-6 rounded-full transition duration-300 inline-block"
+            <form
+              action={async () => {
+                "use server";
+                const cookieStore = await cookies();
+                await cookieStore.set(
+                  "tarot-cards",
+                  JSON.stringify({ cards: [], hasVisited: false })
+                );
+                const newCardId =
+                  tarotCards[Math.floor(Math.random() * tarotCards.length)].id;
+                redirect(`/reading/${newCardId}`);
+              }}
             >
-              もう一度引く
-            </Link>
+              <button
+                type="submit"
+                className="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-6 rounded-full transition duration-300 inline-block"
+              >
+                もう一度引く
+              </button>
+            </form>
             <Link
               href="/"
               className="text-purple-300 hover:text-purple-100 transition duration-300"
