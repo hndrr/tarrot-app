@@ -13,14 +13,30 @@ export async function saveCardToSession(card: Card) {
   try {
     const cookieStore = await cookies();
     const existingCookie = cookieStore.get("tarot-cards")?.value;
-    const existingCards = existingCookie
-      ? (JSON.parse(existingCookie) as Card[])
-      : [];
+    let sessionData;
 
-    existingCards.push(card);
+    try {
+      sessionData = existingCookie ? JSON.parse(existingCookie) : { cards: [] };
+      if (!sessionData.cards) {
+        sessionData.cards = [];
+      }
+    } catch (error) {
+      console.error("Failed to parse existing cookie:", error);
+      sessionData = { cards: [] };
+    }
 
-    await cookieStore.set("tarot-cards", JSON.stringify(existingCards), {
-      httpOnly: false, //
+    // 既存のカードがあれば更新、なければ追加
+    const existingCardIndex = sessionData.cards.findIndex(
+      (c: Card) => c.id === card.id
+    );
+    if (existingCardIndex >= 0) {
+      sessionData.cards[existingCardIndex] = card;
+    } else {
+      sessionData.cards.push(card);
+    }
+
+    await cookieStore.set("tarot-cards", JSON.stringify(sessionData), {
+      httpOnly: false,
       secure: false,
       sameSite: "lax",
       path: "/",
@@ -35,14 +51,30 @@ export async function saveCardToSession(card: Card) {
 export async function getSessionCards(): Promise<Card[]> {
   try {
     const cookieStore = await cookies();
-    const cardsJson = cookieStore.get("tarot-cards")?.value;
+    const sessionStr = cookieStore.get("tarot-cards")?.value;
 
-    if (!cardsJson) {
+    if (!sessionStr) {
       return [];
     }
 
-    const cards = JSON.parse(cardsJson) as Card[];
-    return cards;
+    try {
+      const data = JSON.parse(sessionStr);
+
+      // データ構造の確認と変換
+      if (Array.isArray(data)) {
+        // 古い形式: 配列直接保存
+        return data;
+      } else if (data.cards && Array.isArray(data.cards)) {
+        // 新しい形式: { cards: Card[] }
+        return data.cards;
+      } else {
+        console.error("Invalid session data structure");
+        return [];
+      }
+    } catch (error) {
+      console.error("Failed to parse session data:", error);
+      return [];
+    }
   } catch (error) {
     console.error("Failed to get cards from session:", error);
     return [];
