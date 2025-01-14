@@ -1,4 +1,5 @@
 import { tarotCards } from "@/data/tarotCards";
+import { getSessionCards } from "@/lib/actions";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -32,25 +33,21 @@ async function getTarotMessage(
   return res.json();
 }
 
-export default async function CardDetail({
-  params,
-  searchParams,
-}: {
-  params: Promise<Params>;
-  searchParams: Promise<{ reversed?: string }>;
-}) {
-  const resolvedSearchParams = await searchParams;
-
+export default async function CardDetail({ params }: { params: Params }) {
   const { id } = await params;
   const card = tarotCards.find((card) => card.id === parseInt(id));
-  const { name, meaning } = card || {};
-  const isReversed = resolvedSearchParams?.reversed === "true";
+
+  // セッションからカード情報を取得
+  const savedCards = await getSessionCards();
+  const savedCard = savedCards.find((c) => c.id === parseInt(id));
+  console.log("savedCard", savedCard);
+  const isReversed = savedCard?.isReversed ?? false;
 
   let result: TarotResponse | null = null;
 
-  if (name && meaning) {
+  if (card) {
     try {
-      result = await getTarotMessage(name, meaning);
+      result = await getTarotMessage(card.name, card.meaning);
     } catch (error) {
       console.error("エラー:", error);
     }
@@ -101,7 +98,7 @@ export default async function CardDetail({
             </h1>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
               <h2 className="text-xl font-semibold mb-2">カードの意味</h2>
-              <p className="text-gray-200">{meaning}</p>
+              <p className="text-gray-200">{card.meaning}</p>
               <h2 className="text-xl font-semibold mt-6 mb-2">詳細な解釈</h2>
               <div className="space-y-4">
                 <p className="text-gray-200">

@@ -1,6 +1,7 @@
 import { tarotCards } from "@/data/tarotCards";
 import { delay } from "@/lib/delay";
 import TarotCard from "@components/TarotCard";
+import SaveCard from "@/components/SaveCard";
 import Link from "next/link";
 
 type Params = {
@@ -11,18 +12,25 @@ export default async function Reading({
   params,
   searchParams,
 }: {
-  params: Promise<Params>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  params: Params;
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const resolvedSearchParams = await searchParams;
-
-  if (!(resolvedSearchParams?.back === "true")) {
+  if (!(searchParams?.back === "true")) {
     await delay(6000);
   }
 
-  const { id } = await params;
+  const { id } = params;
   const card = tarotCards.find((card) => card.id === parseInt(id));
-  const isReversed = resolvedSearchParams?.reversed === "true";
+  const isReversed = searchParams?.reversed === "true";
+
+  const cardData = card
+    ? {
+        id: card.id,
+        name: card.name,
+        position: isReversed ? "reversed" : "upright",
+        isReversed,
+      }
+    : null;
 
   if (!card) {
     return (
@@ -48,9 +56,10 @@ export default async function Reading({
         <div className="flex flex-col items-center gap-8">
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 max-w-2xl w-full">
             <TarotCard card={card} isReversed={isReversed} />
+            {cardData && <SaveCard card={cardData} />}
             <div className="mt-8 text-center">
               <Link
-                href={`/cards/${card.id}?reversed=${isReversed}`}
+                href={`/cards/${card.id}`}
                 className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full transition duration-300 inline-block"
               >
                 詳細を見る
