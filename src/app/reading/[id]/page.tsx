@@ -11,7 +11,7 @@ type Params = {
 };
 
 export default async function Reading({ params }: { params: Params }) {
-  const { id } = params;
+  const { id } = await params;
   const card = tarotCards.find((card) => card.id === parseInt(id));
 
   // セッションからデータを取得
