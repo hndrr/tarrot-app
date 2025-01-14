@@ -3,9 +3,7 @@ import { getSessionCards } from "@/lib/actions";
 import Link from "next/link";
 import Image from "next/image";
 
-type Params = {
-  id: string;
-};
+type Params = Promise<{ id: string }>;
 
 type TarotResponse = {
   upright: string;

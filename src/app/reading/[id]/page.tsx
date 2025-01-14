@@ -7,9 +7,7 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import DrawCardButton from "@/components/DrawCardButton";
 
-type Params = {
-  id: string;
-};
+type Params = Promise<{ id: string }>;
 
 export default async function Reading({ params }: { params: Params }) {
   const { id } = await params;
