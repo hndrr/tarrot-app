@@ -1,5 +1,6 @@
 import { tarotCards } from "@/data/tarotCards";
 import { delay } from "@/lib/delay";
+import { getTarotDataFromCookie } from "@/lib/actions";
 import TarotCard from "@components/TarotCard";
 import Link from "next/link";
 
@@ -17,12 +18,20 @@ export default async function Reading({
   const resolvedSearchParams = await searchParams;
 
   if (!(resolvedSearchParams?.back === "true")) {
-    await delay(6000);
+    await delay(2000);
   }
 
   const { id } = await params;
-  const card = tarotCards.find((card) => card.id === parseInt(id));
-  const isReversed = resolvedSearchParams?.reversed === "true";
+  const cardId = parseInt(id);
+  const card = tarotCards.find((card) => card.id === cardId);
+
+  let tarotData = null;
+  try {
+    tarotData = await getTarotDataFromCookie(cardId);
+  } catch (error) {
+    console.error("エラー:", error);
+  }
+  const isReversed = tarotData?.isReversed ?? false;
 
   if (!card) {
     return (
@@ -50,7 +59,7 @@ export default async function Reading({
             <TarotCard card={card} isReversed={isReversed} />
             <div className="mt-8 text-center">
               <Link
-                href={`/cards/${card.id}?reversed=${isReversed}`}
+                href={`/cards/${card.id}?back=true`}
                 className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full transition duration-300 inline-block"
               >
                 詳細を見る
@@ -62,7 +71,7 @@ export default async function Reading({
             <Link
               href={`/reading/${
                 tarotCards[Math.floor(Math.random() * tarotCards.length)].id
-              }?reversed=${Math.random() < 0.5}`}
+              }`}
               className="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-6 rounded-full transition duration-300 inline-block"
             >
               もう一度引く
